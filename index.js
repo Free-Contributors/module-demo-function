@@ -37,21 +37,20 @@ ipcMain.on("folderExplorer", async (e, argument) => {
   const MapObj = new Map();
 
   jsFileArray.forEach((jsFile) => {
-    fs.readFile(jsFile, "utf8", function (err, data) {
-      const res = data
-        .split(";")
-        .filter((item) => !!item.match(regex))
-        .map((item) => item.replace("(\\n/g)", "").trim());
+    const fileContent = fs.readFileSync(jsFile, "utf8");
 
-      if (res.length > 0) {
-        // obj[jsFile] = res;
-        // console.log(jsFile, res);
-        MapObj.set(jsFile, res);
-      }
-      console.log(MapObj); // 여기서는 잘찍힘...
-    });
+    const res = fileContent
+      .split(";")
+      .filter((item) => !!item.match(regex))
+      .map((item) => item.replace("(\\n/g)", "").trim());
+
+    // console.log(jsFile, res);
+    if (res.length > 0) {
+      MapObj.set(jsFile, res);
+    }
   });
-  console.log(MapObj); // 여기서 하면 Map초기화된 상태임..
+  console.log(MapObj);
+  // console.log(MapObj); // 여기서 하면 Map초기화된 상태임..
 
   e.reply("folderList", jsFileArray);
 });
